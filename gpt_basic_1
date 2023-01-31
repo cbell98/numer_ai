@@ -1,0 +1,35 @@
+import xgboost as xgb
+import pandas as pd
+
+# Load the numerai data set
+train = pd.read_csv("numerai_training_data.csv")
+test = pd.read_csv("numerai_tournament_data.csv")
+
+# Define features and target
+features = [col for col in train.columns if col.startswith("feature")]
+target = "target"
+
+# Split data into train and validation sets
+train_x = train[features]
+train_y = train[target]
+valid_x = test[features]
+valid_y = test[target]
+
+# Define an XGBoost model
+model = xgb.XGBClassifier()
+
+# Train the model using XGBoost algorithm
+model.fit(train_x, train_y)
+
+# Validate the model using the validation data
+valid_predictions = model.predict_proba(valid_x)[:, 1]
+
+# Create predictions for the test data
+test_predictions = model.predict_proba(test[features])[:, 1]
+
+# Submit predictions to Numerai
+submission = pd.DataFrame({
+    "id": test["id"],
+    "probability": test_predictions
+})
+submission.to_csv("submission.csv", index=False)
