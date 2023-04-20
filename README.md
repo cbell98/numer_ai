@@ -1,2 +1,2 @@
 # numer_ai
-numerai notebooks and scripts
+Numerai notebooks and scripts to participate in the Numerai daily tournament.
